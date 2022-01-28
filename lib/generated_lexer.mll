@@ -20,7 +20,7 @@ rule token = parse
     { RParen }
 | '-'
     { Hyphen }
-| [ 'a'-'z' ]
+| _
     { Character (String.get (Lexing.lexeme lexbuf) 0) }
 | eof { raise Eof }
 
