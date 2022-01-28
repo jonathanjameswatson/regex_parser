@@ -2,3 +2,5 @@
  (name regex_parser)
  (libraries core)
  (preprocess (pps ppx_jane)))
+
+(ocamllex (modules generated_lexer))
