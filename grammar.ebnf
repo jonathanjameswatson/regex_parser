@@ -23,6 +23,6 @@ BaseExpression = Character | CharacterClass | Parens;
 
 KleeneStar = BaseExpression, [Star];
 
-Concatenation = KleeneStar, { KleeneStar };
+Concatenation = KleeneStar, { Concatentation };
 
-Expression = Concatenation, { Alt, Concatenation };
+Expression = Concatenation, { Alt, Expression };
