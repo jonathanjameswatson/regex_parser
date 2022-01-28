@@ -1,35 +1,27 @@
 open Core
+open Expression
 
 exception Parse_error
-
-type expr =
-  | Character of char
-  | Concat of expr * expr
-  | Alt of expr * expr
-  | KleeneStar of expr
-  | CharacterRange of char * char
-  | CharacterList of char list
-[@@deriving sexp]
 
 let queue_discard : 'a. 'a Queue.t -> unit = fun q -> ignore (Queue.dequeue_exn q : 'a)
 
 let rec parse_expression tokens =
   let rec parse_character_list_end tokens cs =
     match Queue.peek tokens with
-    | Some (Lexer.Character c) ->
+    | Some (Token.Character c) ->
       queue_discard tokens;
       parse_character_list_end tokens (c :: cs)
-    | Some Lexer.RBracket ->
+    | Some Token.RBracket ->
       queue_discard tokens;
       Some (CharacterList (List.rev cs))
     | _ -> raise Parse_error
   in
   let parse_character_range_end tokens c1 =
     match Queue.peek tokens with
-    | Some (Lexer.Character c2) ->
+    | Some (Token.Character c2) ->
       queue_discard tokens;
       (match Queue.peek tokens with
-      | Some Lexer.RBracket ->
+      | Some Token.RBracket ->
         queue_discard tokens;
         Some (CharacterRange (c1, c2))
       | _ -> raise Parse_error)
@@ -37,15 +29,15 @@ let rec parse_expression tokens =
   in
   let parse_character_class tokens =
     match Queue.peek tokens with
-    | Some Lexer.LBracket ->
+    | Some Token.LBracket ->
       queue_discard tokens;
       (match Queue.peek tokens with
-      | Some (Lexer.Character c1) ->
+      | Some (Token.Character c1) ->
         queue_discard tokens;
         (match Queue.peek tokens with
         | Some x ->
           (match x with
-          | Lexer.Hyphen ->
+          | Token.Hyphen ->
             queue_discard tokens;
             parse_character_range_end tokens c1
           | _ -> parse_character_list_end tokens [ c1 ])
@@ -55,7 +47,7 @@ let rec parse_expression tokens =
   in
   let parse_parens tokens =
     match Queue.peek tokens with
-    | Some Lexer.LParen ->
+    | Some Token.LParen ->
       queue_discard tokens;
       (match parse_expression tokens with
       | Some expression ->
@@ -69,9 +61,9 @@ let rec parse_expression tokens =
   in
   let parse_base_expression tokens =
     match Queue.peek tokens with
-    | Some Lexer.LBracket -> parse_character_class tokens
-    | Some Lexer.LParen -> parse_parens tokens
-    | Some (Lexer.Character c) ->
+    | Some Token.LBracket -> parse_character_class tokens
+    | Some Token.LParen -> parse_parens tokens
+    | Some (Token.Character c) ->
       queue_discard tokens;
       Some (Character c)
     | _ -> None
@@ -97,7 +89,7 @@ let rec parse_expression tokens =
   match parse_concatenation tokens with
   | Some concatenation1 ->
     (match Queue.peek tokens with
-    | Some Lexer.Alt ->
+    | Some Token.Alt ->
       queue_discard tokens;
       (match parse_expression tokens with
       | Some concatenation2 -> Some (Alt (concatenation1, concatenation2))

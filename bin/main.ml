@@ -1,5 +1,5 @@
 open Core
-open Custom_parser
+open Regex_parser
 
 let input_param =
   let open Command.Param in
@@ -7,14 +7,14 @@ let input_param =
 ;;
 
 let handle_input input =
-  let q = Lexer.lex input in
+  let q = Custom_lexer.lex input in
   Out_channel.print_string "Tokens:";
   Out_channel.newline stdout;
-  Sexp.output_hum stdout (Queue.sexp_of_t Lexer.sexp_of_token q);
+  Sexp.output_hum stdout (Queue.sexp_of_t Token.sexp_of_t q);
   Out_channel.newline stdout;
   Out_channel.print_string "AST:";
   Out_channel.newline stdout;
-  Sexp.output_hum stdout (Parser.sexp_of_expr (Parser.parse q));
+  Sexp.output_hum stdout (Expression.sexp_of_t (Custom_rd_parser.parse q));
   Out_channel.newline stdout
 ;;
 

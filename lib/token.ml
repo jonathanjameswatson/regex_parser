@@ -1,6 +1,6 @@
 open Core
 
-type token =
+type t =
   | Character of char
   | Alt
   | Star
@@ -10,5 +10,3 @@ type token =
   | RParen
   | Hyphen
 [@@deriving sexp]
-
-val lex : string -> token Queue.t
