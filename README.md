@@ -1,3 +1,3 @@
 # Regex parser
 
-OCaml parsers (not compilers!) for regular expressions written for compiler construction supervision work.
+OCaml parsers (not compilers!) for (limited) regular expressions written for compiler construction supervision work.
