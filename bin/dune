@@ -1,4 +1,5 @@
 (executable
  (public_name regex_parser)
  (name main)
- (libraries regex_parser))
+ (libraries core custom_parser)
+ (preprocess (pps ppx_jane)))

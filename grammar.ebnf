@@ -1,0 +1,28 @@
+Character = "a" | "b" (* ... *) | "z"
+          | "A" | "B" (* ... *) | "Z"
+          | "0" | "1" (* ... *) | "9"
+          | " " | "_";
+
+Alt = "|";
+Star = "*";
+LBracket = "[";
+RBracket = "]";
+LParen = "(";
+RParen = ")";
+Hyphen = "-";
+
+CharacterList = LBracket, Character, { Character }, RBracket;
+
+CharacterRange = LBracket, Character, Hyphen , Character, RBracket;
+
+CharacterClass = CharacterList | CharacterRange;
+
+Parens = LParen, Expression, RParen;
+
+BaseExpression = Character | CharacterClass | Parens;
+
+KleeneStar = BaseExpression, [Star];
+
+Concatenation = KleeneStar, { KleeneStar };
+
+Expression = Concatenation, { Alt, Concatenation };
