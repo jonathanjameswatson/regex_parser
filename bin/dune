@@ -2,4 +2,5 @@
  (public_name regex_parser)
  (name main)
  (libraries core regex_parser)
- (preprocess (pps ppx_jane)))
+ (preprocess
+  (pps ppx_jane)))

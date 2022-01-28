@@ -1,6 +1,11 @@
 (library
  (name regex_parser)
- (libraries core)
- (preprocess (pps ppx_jane)))
+ (libraries core menhirLib)
+ (preprocess
+  (pps ppx_jane)))
 
-(ocamllex (modules generated_lexer))
+(ocamllex
+ (modules generated_lexer))
+
+(menhir
+ (modules generated_parser_menhir))
